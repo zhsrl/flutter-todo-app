@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/widgets/task_widget.dart';
 
-import '../colors.dart';
+import '../consts.dart';
 
 class TodayTasksWidget extends StatefulWidget {
   TodayTasksWidget({Key? key}) : super(key: key);

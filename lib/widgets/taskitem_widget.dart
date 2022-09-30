@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/colors.dart';
+import 'package:todo_app/consts.dart';
 import 'package:getwidget/getwidget.dart';
 
 // ignore: must_be_immutable

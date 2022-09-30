@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/colors.dart';
+import 'package:todo_app/consts.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);

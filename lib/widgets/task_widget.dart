@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
 
-import '../colors.dart';
+import '../consts.dart';
 
 class TaskWidget extends StatefulWidget {
   TaskWidget({Key? key}) : super(key: key);

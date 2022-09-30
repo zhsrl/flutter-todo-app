@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/widgets/taskitem_widget.dart';
 
-import '../colors.dart';
+import '../consts.dart';
 
 class InProgressWidget extends StatefulWidget {
   InProgressWidget({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class _InProgressWidgetState extends State<InProgressWidget> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Text('In Progress',
+          child: Text('Folders',
               style: TextStyle(
                   color: AppColor.white,
                   fontWeight: FontWeight.w600,

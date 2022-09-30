@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/colors.dart';
+import 'package:todo_app/consts.dart';
 import 'package:todo_app/pages/calendarpage.dart';
 import 'package:todo_app/pages/profilepage.dart';
 import 'package:todo_app/pages/recyclepage.dart';
+import 'package:todo_app/pages/signin_page.dart';
 import 'package:todo_app/pages/todopage.dart';
 
 void main() {
@@ -49,8 +50,8 @@ class _TodoScreenState extends State<TodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
-        child: currentScreen,
         bucket: pageStorageBucket,
+        child: currentScreen,
       ),
       backgroundColor: AppColor.dark,
       bottomNavigationBar: BottomAppBar(
@@ -88,7 +89,18 @@ class _TodoScreenState extends State<TodoScreen> {
               ),
               FloatingActionButton(
                 onPressed: () {},
-                child: Icon(Icons.add),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: AppColor.priorityItemColor1,
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    size: 40,
+                  ),
+                ),
               ),
               IconButton(
                 icon: Icon(
