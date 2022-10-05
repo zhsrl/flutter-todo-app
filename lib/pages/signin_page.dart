@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/consts.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:todo_app/pages/signup_page.dart';
+import 'package:todo_app/pages/signup/emailandpassword.dart';
+import 'package:todo_app/pages/signup/userdatapage.dart';
+
+import '../main.dart';
 
 class SignInPage extends StatefulWidget {
   SignInPage({Key? key}) : super(key: key);
@@ -11,6 +15,28 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final firebaseAuth = FirebaseAuth.instance;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future<void> signInFirebase(String email, String password) async {
+    try {
+      await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => TodoScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        debugPrint('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        debugPrint('Wrong password provided for that user.');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double fullHeight = MediaQuery.of(context).size.width;
@@ -37,6 +63,7 @@ class _SignInPageState extends State<SignInPage> {
                   height: fullHeight * 0.15,
                 ),
                 TextField(
+                  controller: _emailController,
                   decoration: Utils().inputDecoration('Email'),
                   style: TextStyle(
                     color: AppColor.white,
@@ -47,6 +74,8 @@ class _SignInPageState extends State<SignInPage> {
                   height: fullHeight * 0.05,
                 ),
                 TextField(
+                  controller: _passwordController,
+                  obscureText: true,
                   decoration: Utils().inputDecoration('Password'),
                   style: TextStyle(
                     color: AppColor.white,
@@ -60,7 +89,12 @@ class _SignInPageState extends State<SignInPage> {
                   width: fullWidth,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String userEmail = _emailController.text;
+                      String userPassword = _passwordController.text;
+
+                      signInFirebase(userEmail, userPassword);
+                    },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColor.green),
                     child: Text('Sign in'.toUpperCase(),
@@ -75,8 +109,10 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EmailAndPassword()));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -34,4 +34,13 @@ class Utils {
         border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))));
   }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showNotification(
+      BuildContext context, String text) {
+    final snackbar = SnackBar(
+      content: Text(text),
+    );
+    // ignore: use_build_context_synchronously
+    return ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
 }
