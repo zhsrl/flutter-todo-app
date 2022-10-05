@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/consts.dart';
 import 'package:todo_app/pages/calendarpage.dart';
@@ -18,6 +19,16 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Widget authStateCheck() {
+    final auth = FirebaseAuth.instance;
+
+    if (auth.currentUser?.uid != null) {
+      return TodoScreen();
+    } else {
+      return SignInPage();
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -27,7 +38,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: AppColor.dark,
         fontFamily: 'Gilroy',
       ),
-      home: SignInPage(),
+      home: authStateCheck(),
     );
   }
 }
