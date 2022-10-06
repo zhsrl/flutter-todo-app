@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/consts.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:todo_app/pages/signup/emailandpassword.dart';
-import 'package:todo_app/pages/signup/userdatapage.dart';
 
 import '../main.dart';
 

@@ -48,8 +48,8 @@ class _NameandSurnamePageState extends State<NameandSurnamePage> {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(snackbar);
 
-      // ignore: use_build_context_synchronously
-
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => TodoScreen()));
     } catch (e) {
       final snackbar = SnackBar(
         content: Text(e.toString()),
