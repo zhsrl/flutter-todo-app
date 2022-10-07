@@ -272,7 +272,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   controller: _nameController,
                                                   decoration: Utils()
                                                       .inputDecorationWithLabel(
-                                                          data.toString(),
+                                                          data
+                                                              .toString()
+                                                              .trim(),
                                                           'Name'),
                                                   style: TextStyle(
                                                     color: AppColor.white,
@@ -306,7 +308,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   controller: _emailController,
                                                   decoration: Utils()
                                                       .inputDecorationWithLabel(
-                                                          data.toString(),
+                                                          data
+                                                              .toString()
+                                                              .trim(),
                                                           'Email'),
                                                   style: TextStyle(
                                                     color: AppColor.white,
@@ -340,7 +344,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   controller: _workController,
                                                   decoration: Utils()
                                                       .inputDecorationWithLabel(
-                                                          data.toString(),
+                                                          data
+                                                              .toString()
+                                                              .trim(),
                                                           'What kind of work do you do?'),
                                                   style: TextStyle(
                                                     color: AppColor.white,
