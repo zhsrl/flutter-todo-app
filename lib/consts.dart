@@ -35,6 +35,27 @@ class Utils {
             borderRadius: BorderRadius.all(Radius.circular(8))));
   }
 
+  InputDecoration inputDecorationWithLabel(String hintText, String? labelText) {
+    return InputDecoration(
+        isCollapsed: true,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        labelText: labelText!,
+        labelStyle: TextStyle(color: AppColor.white),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        hintStyle: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFFBDBDBD)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            borderSide: BorderSide(color: Color(0xFF5DB075), width: 1.5)),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFFE8E8E8), width: 1.5),
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8))));
+  }
+
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showNotification(
       BuildContext context, String text) {
     final snackbar = SnackBar(
