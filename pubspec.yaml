@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^3.11.0
   firebase_core: ^1.24.0
   firebase_database: ^9.1.6
+  # provider: ^4.3.1
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,14 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/memoji_woman.png
+    - assets/images/avatar/m-1.png
+    - assets/images/avatar/m-2.png
+    - assets/images/avatar/m-3.png
+    - assets/images/avatar/m-4.png
+    - assets/images/avatar/f-1.png
+    - assets/images/avatar/f-2.png
+    - assets/images/avatar/f-3.png
+    - assets/images/avatar/f-4.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

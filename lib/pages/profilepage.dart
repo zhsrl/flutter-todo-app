@@ -1,8 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
 import 'package:todo_app/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:todo_app/images.dart';
 import 'package:todo_app/pages/signin_page.dart';
+
+import '../single_notifier.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -93,6 +97,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+
+    debugPrint(maleImages[1].toString());
 
     setState(() {
       nameTempvalfromDB.onValue.listen((event) {
@@ -224,6 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      // Change User Data Bottom Sheet
                       showModalBottomSheet(
                           isScrollControlled: true,
                           context: context,
@@ -248,7 +255,163 @@ class _ProfilePageState extends State<ProfilePage> {
                                           backgroundColor: AppColor.green,
                                         ),
                                         SizedBox(
-                                          height: fullHeight * 0.06,
+                                          height: fullHeight * 0.02,
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            var selectedImage;
+
+                                            showModalBottomSheet(
+                                                backgroundColor: AppColor.dark,
+                                                context: context,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                builder: (context) {
+                                                  return Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 32.0,
+                                                        horizontal: 24.0),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text('Avatar',
+                                                            style: TextStyle(
+                                                              color: AppColor
+                                                                  .white,
+                                                              fontSize: 32,
+                                                            )),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: SizedBox(
+                                                                height: 100,
+                                                                width: 300,
+                                                                child: ListView
+                                                                    .separated(
+                                                                        itemCount:
+                                                                            maleImages
+                                                                                .length,
+                                                                        scrollDirection:
+                                                                            Axis
+                                                                                .horizontal,
+                                                                        separatorBuilder:
+                                                                            (context,
+                                                                                index) {
+                                                                          return SizedBox(
+                                                                              width: 20);
+                                                                        },
+                                                                        itemBuilder:
+                                                                            (context,
+                                                                                index) {
+                                                                          return GestureDetector(
+                                                                              child: Stack(
+                                                                            alignment:
+                                                                                AlignmentDirectional.bottomCenter,
+                                                                            children: [
+                                                                              CircleAvatar(radius: 40, backgroundImage: AssetImage(maleImages[index])),
+                                                                              Radio(
+                                                                                value: maleImages[index],
+                                                                                groupValue: selectedImage,
+                                                                                onChanged: (value) {
+                                                                                  selectedImage = value;
+                                                                                  setState(() {});
+                                                                                },
+                                                                              ),
+                                                                            ],
+                                                                          ));
+                                                                        }),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: SizedBox(
+                                                                height: 100,
+                                                                child: ListView
+                                                                    .separated(
+                                                                        itemCount:
+                                                                            femaleImages
+                                                                                .length,
+                                                                        scrollDirection:
+                                                                            Axis
+                                                                                .horizontal,
+                                                                        separatorBuilder:
+                                                                            (context,
+                                                                                index) {
+                                                                          return SizedBox(
+                                                                              width: 20);
+                                                                        },
+                                                                        itemBuilder:
+                                                                            (context,
+                                                                                index) {
+                                                                          return GestureDetector(
+                                                                              child: Stack(
+                                                                            alignment:
+                                                                                AlignmentDirectional.bottomCenter,
+                                                                            children: [
+                                                                              CircleAvatar(
+                                                                                  radius: 40,
+                                                                                  backgroundImage: AssetImage(
+                                                                                    femaleImages[index],
+                                                                                  )),
+                                                                              Radio(
+                                                                                value: femaleImages[index],
+                                                                                groupValue: selectedImage,
+                                                                                onChanged: (value) {
+                                                                                  selectedImage = value;
+                                                                                  setState(() {});
+                                                                                },
+                                                                              ),
+                                                                            ],
+                                                                          ));
+                                                                        }),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height:
+                                                              fullHeight * 0.05,
+                                                        ),
+                                                        SizedBox(
+                                                          width: fullWidth,
+                                                          height: 55,
+                                                          child: ElevatedButton(
+                                                            onPressed: () {},
+                                                            style: ElevatedButton
+                                                                .styleFrom(
+                                                                    backgroundColor:
+                                                                        AppColor
+                                                                            .green),
+                                                            child: Text(
+                                                                'Select',
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        AppColor
+                                                                            .dark,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                          child: Text('Change avatar'),
+                                        ),
+                                        SizedBox(
+                                          height: fullHeight * 0.04,
                                         ),
                                         StreamBuilder(
                                             stream: nameTempvalfromDB.onValue,

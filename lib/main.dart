@@ -6,14 +6,18 @@ import 'package:todo_app/pages/profilepage.dart';
 import 'package:todo_app/pages/recyclepage.dart';
 import 'package:todo_app/pages/signin_page.dart';
 import 'package:todo_app/pages/todopage.dart';
+import 'package:todo_app/single_notifier.dart';
 import 'firebase_options.dart';
+// import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
