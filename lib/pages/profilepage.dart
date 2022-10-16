@@ -2,16 +2,19 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 // import 'package:provider/provider.dart';
 import 'package:todo_app/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:todo_app/images.dart';
+import 'package:todo_app/pages/change_profile.dart';
 import 'package:todo_app/pages/signin_page.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:todo_app/utils/fbstorage_manager.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key? key}) : super(key: key);
@@ -62,81 +65,9 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<void> _updateData(String name, String email, String work) async {
-    final user = FirebaseAuth.instance.currentUser;
-    final firebaseDB = FirebaseDatabase.instance;
-
-    Map<String, String> updatedUser = {
-      "name": name,
-      "email": email,
-      "what kind of work do you do": work
-    };
-
-    try {
-      await firebaseDB
-          .ref()
-          .child("Users")
-          .child(user!.uid)
-          .update(updatedUser);
-
-      await user.updateEmail(email);
-
-      final snackbar = SnackBar(
-        content: Text('Update Success!'),
-      );
-
-      Navigator.pop(context);
-
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-    } catch (e) {
-      debugPrint(e.toString());
-
-      final snackbar = SnackBar(
-        content: Text(e.toString()),
-      );
-
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-    }
-  }
-
-  Future selectFile() async {
-    final result = await FilePicker.platform.pickFiles();
-
-    if (result == null) return;
-
-    setState(() {
-      pickedFile = result.files.first;
-    });
-  }
-
-  Future selectImage() async {
-    try {
-      final image = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-          maxHeight: 640,
-          maxWidth: 480,
-          imageQuality: 90);
-
-      if (image == null) return;
-
-      final imagePath = File(image.path);
-
-      setState(() {
-        this.image = imagePath;
-        Navigator.of(context).pop();
-      });
-    } on PlatformException catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-
-    debugPrint(maleImages[1].toString());
 
     setState(() {
       nameTempvalfromDB.onValue.listen((event) {
@@ -164,6 +95,20 @@ class _ProfilePageState extends State<ProfilePage> {
     double fullWidth = MediaQuery.of(context).size.width;
     double fullHeight = MediaQuery.of(context).size.height;
 
+    String? url;
+
+    final userImage = FirebaseStorage.instance
+        .ref()
+        .child('user_avatars')
+        .child(FirebaseAuth.instance.currentUser!.uid)
+        .getDownloadURL();
+
+    debugPrint(userImage.toString());
+
+    setState(() {
+      url = userImage.toString();
+    });
+
     return Scaffold(
       backgroundColor: AppColor.dark,
       body: SafeArea(
@@ -171,10 +116,56 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(
-                radius: 70,
-                backgroundColor: AppColor.green,
-              ),
+              FutureBuilder(
+                  future: FirebaseStorageManager().getData(),
+                  builder: ((context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: AppColor.green),
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Container(
+                        width: 150,
+                        height: 150,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Image.network(
+                          snapshot.data.toString(),
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  })),
+              // if (url == null)
+              //   Container(
+              //     width: 150,
+              //     height: 150,
+              //     decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(100),
+              //         color: AppColor.green),
+              //   )
+              // else
+              //   Container(
+              //     width: 150,
+              //     height: 150,
+              //     clipBehavior: Clip.hardEdge,
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(100),
+              //     ),
+              //     child: Image.network(
+              //       url!,
+              //       fit: BoxFit.cover,
+              //     ),
+              //   ),
               SizedBox(
                 height: fullHeight * 0.02,
               ),
@@ -268,188 +259,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Change User Data Bottom Sheet
                       showModalBottomSheet(
+                          enableDrag: false,
                           isScrollControlled: true,
+                          isDismissible: false,
                           context: context,
                           backgroundColor: AppColor.dark,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           builder: (context) {
-                            return Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 60, horizontal: 24),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 70,
-                                          backgroundColor: AppColor.green,
-                                        ),
-                                        SizedBox(
-                                          height: fullHeight * 0.02,
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            selectImage();
-                                            // showModalBottomSheet(
-                                            //     backgroundColor: AppColor.dark,
-                                            //     context: context,
-                                            //     shape: RoundedRectangleBorder(
-                                            //       borderRadius:
-                                            //           BorderRadius.circular(
-                                            //               10.0),
-                                            //     ),
-                                            //     builder: (context) {
-                                            //       return ChangeAvatar();
-                                            //     });
-                                          },
-                                          child: Text('Change avatar'),
-                                        ),
-                                        SizedBox(
-                                          height: fullHeight * 0.04,
-                                        ),
-                                        StreamBuilder(
-                                            stream: nameTempvalfromDB.onValue,
-                                            builder: ((context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return TextFormField(
-                                                  decoration: Utils()
-                                                      .inputDecoration(
-                                                          'noname'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              } else {
-                                                final data = (snapshot.data!)
-                                                    .snapshot
-                                                    .value;
-
-                                                return TextField(
-                                                  controller: _nameController,
-                                                  decoration: Utils()
-                                                      .inputDecorationWithLabel(
-                                                          data
-                                                              .toString()
-                                                              .trim(),
-                                                          'Name'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              }
-                                            })),
-                                        SizedBox(
-                                          height: fullHeight * 0.02,
-                                        ),
-                                        StreamBuilder(
-                                            stream: emailTempvalfromDB.onValue,
-                                            builder: ((context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return TextField(
-                                                  decoration: Utils()
-                                                      .inputDecoration(
-                                                          'noname'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              } else {
-                                                final data = (snapshot.data!)
-                                                    .snapshot
-                                                    .value;
-
-                                                return TextField(
-                                                  controller: _emailController,
-                                                  decoration: Utils()
-                                                      .inputDecorationWithLabel(
-                                                          data
-                                                              .toString()
-                                                              .trim(),
-                                                          'Email'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              }
-                                            })),
-                                        SizedBox(
-                                          height: fullHeight * 0.02,
-                                        ),
-                                        StreamBuilder(
-                                            stream: workTempvalfromDB.onValue,
-                                            builder: ((context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return TextField(
-                                                  decoration: Utils()
-                                                      .inputDecoration(
-                                                          'noname'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              } else {
-                                                final data = (snapshot.data!)
-                                                    .snapshot
-                                                    .value;
-
-                                                return TextField(
-                                                  controller: _workController,
-                                                  decoration: Utils()
-                                                      .inputDecorationWithLabel(
-                                                          data
-                                                              .toString()
-                                                              .trim(),
-                                                          'What kind of work do you do?'),
-                                                  style: TextStyle(
-                                                    color: AppColor.white,
-                                                    fontSize: 18,
-                                                  ),
-                                                );
-                                              }
-                                            })),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: fullWidth,
-                                      height: 55,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          String updatedName =
-                                              _nameController.text;
-                                          String updatedEmail =
-                                              _emailController.text;
-                                          String updatedWork =
-                                              _workController.text;
-
-                                          _updateData(updatedName, updatedEmail,
-                                              updatedWork);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppColor.green),
-                                        child: Text('Update',
-                                            style: TextStyle(
-                                                color: AppColor.dark,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
+                            return ChangeProfile();
                           });
                     },
                     child: Text('Change Data'),
